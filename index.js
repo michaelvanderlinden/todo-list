@@ -75,6 +75,73 @@ app.get('/', loadUserTasks, function (req, res) {
       res.render('index');
 });
 
+
+// Toggle boolean iscomplete value when mark completed button is pressed
+
+//Tasks.update({isComplete: false}, true);
+//app.post('task')
+
+//each task has its own id
+//when "Mark Complete" button with task id is pressed
+    //if corresponding isComplete db entry is false
+         //POST a TRUE value to the corresponding isComplete handler
+    //else
+         //POST a FALSE value to the corresponding isComplete handler
+
+/////////////////////////////////////////////////////////////
+
+//marking complete
+//app.post('/task/complete', loadUserTasks, function(req, res){
+//  if(task.isComplete == false){
+//    Tasks.update({ _id : id }, { isComplete: true })
+//    res.send('Task complete!')
+//  }else{
+//    Tasks.update({ _id :id }, { isComplete: false })
+//    res.send('Task not complete!')
+//  }
+//});
+
+
+
+app.post('/task/complete', loadUserTasks, function(req, res){
+  console.log(req.body.id);
+Tasks.findById(req.body.id, function (err, task) {
+  console.log("got here");
+  console.log(task);
+  if (err) res.send('error!');
+  if (task.isComplete) {
+    task.isComplete = false;
+  } else {
+    task.isComplete = true;
+  }
+  
+  task.save(function (err) {
+    if (err) res.send('error!');
+    });
+    res.redirect('/');
+})});
+
+//removing
+
+app.post('/task/delete', loadUserTasks, function(req, res){
+  console.log(req.body.id);
+Tasks.findById(req.body.id, function (err, task) {
+  if (err) res.send('error!');
+  
+  task.remove( function(err, result){
+    if (err) res.send('error!');
+    });
+
+})
+res.redirect('/');
+});
+
+
+////////////////////////////////////////////////////////////
+
+
+
+
 // Handle submitted form for new users
 app.post('/user/register', function (req, res) {
   if(req.body.password !== req.body.password_confirmation){
@@ -131,7 +198,7 @@ app.post('/user/login', function (req, res) {
 });
 
 // Log a user out
-app.get('/user/logout', function(req, res){
+('/user/logout', function(req, res){
   req.session.destroy(function(){
     res.redirect('/');
   });
@@ -147,6 +214,7 @@ app.post('/task/create', function(req, res){
   newTask.owner = res.locals.currentUser._id;
   newTask.title = req.body.title;
   newTask.description = req.body.description;
+  newTask.isComplete = false;
   newTask.collaborators = [req.body.collaborator1, req.body.collaborator2, req.body.collaborator3];
   newTask.save(function(err, savedTask){
     if(err || !savedTask){
