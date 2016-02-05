@@ -76,31 +76,8 @@ app.get('/', loadUserTasks, function (req, res) {
 });
 
 
-// Toggle boolean iscomplete value when mark completed button is pressed
-
-//Tasks.update({isComplete: false}, true);
-//app.post('task')
-
-//each task has its own id
-//when "Mark Complete" button with task id is pressed
-    //if corresponding isComplete db entry is false
-         //POST a TRUE value to the corresponding isComplete handler
-    //else
-         //POST a FALSE value to the corresponding isComplete handler
 
 /////////////////////////////////////////////////////////////
-
-//marking complete
-//app.post('/task/complete', loadUserTasks, function(req, res){
-//  if(task.isComplete == false){
-//    Tasks.update({ _id : id }, { isComplete: true })
-//    res.send('Task complete!')
-//  }else{
-//    Tasks.update({ _id :id }, { isComplete: false })
-//    res.send('Task not complete!')
-//  }
-//});
-
 
 
 app.post('/task/complete', loadUserTasks, function(req, res){
@@ -123,18 +100,27 @@ Tasks.findById(req.body.id, function (err, task) {
 
 //removing
 
-app.post('/task/delete', loadUserTasks, function(req, res){
-  console.log(req.body.id);
-Tasks.findById(req.body.id, function (err, task) {
-  if (err) res.send('error!');
+app.post('/task/delete/:id', loadUserTasks, function(req, res){
+  UserID = res.locals.currentUser._id;
   
-  task.remove( function(err, result){
-    if (err) res.send('error!');
-    });
-
-})
-res.redirect('/');
+  Tasks.findOne(req.params.id, function (err, task) {
+  
+  if (UserID.toString() == task.owner.toString()){
+    if (err){
+      res.send('error!');
+    }
+    
+    else{
+      task.remove();
+    }
+    res.redirect('/');
+  }});
 });
+
+   
+    
+  
+
 
 
 ////////////////////////////////////////////////////////////

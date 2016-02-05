@@ -16,11 +16,11 @@
             {{#each tasks}}
                 <li class="tasks-list-item">
                   <span class="task-title">{{this.title}}</span>
-                  <form action="/task/delete" method="post">
+                  <form action="/task/delete/{{this.id}}" method="post">
                       <input type="hidden" name="id" value="{{this._id}}" />
                     <input type="submit" name="delete-task" class="delete-task" value="Delete">
                   </form>
-                  <form action='/task/complete' method="post">
+                  <form action='/task/complete/' method="post">
                       <input type="hidden" name="id" value="{{this._id}}" />
                     <input type="submit" name="toggle-task" class="toggle-task" value="Mark complete">
                   </form>
