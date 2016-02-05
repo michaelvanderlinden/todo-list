@@ -184,11 +184,11 @@ app.post('/user/login', function (req, res) {
 });
 
 // Log a user out
-('/user/logout', function(req, res){
-  req.session.destroy(function(){
+app.get('/user/logout', function(req, res){
+  req.session.destroy();
     res.redirect('/');
-  });
 });
+
 
 //  All the controllers and routes below this require
 //  the user to be logged in.
